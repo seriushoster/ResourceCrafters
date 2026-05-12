@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Projects | ResourceCrafters</title>
+    <!-- FontAwesome Library for Icons -->
+    <link rel="stylesheet" href="cloudflare.com">
+    
+    <!-- Instant theme check script to prevent flickering between pages -->
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("theme") || "light";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        })();
+    </script>
+    
+    <style>
+        /* Color System Variables */
+        :root {
+            --bg-main: #f4f4f4; 
+            --bg-panel: #ffffff; 
+            --border-color: #e0e0e0;
+            --text-main: #000000;
+            --text-sub: #555555;
+            --sidebar-bg: #222222; 
+            --sidebar-link: #aaaaaa; 
+            --sidebar-link-hover: #ffffff;
+            --sidebar-hover-bg: #2a2a2a;
+            --card-shadow: rgba(0, 0, 0, 0.05);
+            --card-hover-shadow: rgba(0, 0, 0, 0.12);
+        }
+
+        [data-theme="dark"] {
+            --bg-main: #0a0a0a; 
+            --bg-panel: #141414; 
+            --border-color: #222222;
+            --text-main: #ffffff;
+            --text-sub: #b3b3b3;
+            --sidebar-bg: #0d0d0d;
+            --sidebar-link: #888888;
+            --sidebar-link-hover: #ffffff;
+            --sidebar-hover-bg: #1a1a1a;
+            --card-shadow: rgba(0, 0, 0, 0.4);
+            --card-hover-shadow: rgba(0, 0, 0, 0.6);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.3s, box-shadow 0.3s; }
+        body, html { height: 100%; min-height: 100vh; overflow-y: auto; background-color: var(--bg-main); color: var(--text-main); }
+
+        /* Sidebar Styling */
+        .sidebar { height: 100%; width: 0; position: fixed; z-index: 10; top: 0; left: 0; background-color: var(--sidebar-bg); overflow-x: hidden; transition: width 0.5s; padding-top: 60px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; }
+        .menu-links a { padding: 15px 32px; text-decoration: none; font-size: 18px; color: var(--sidebar-link); display: block; text-transform: uppercase; letter-spacing: 2px; }
+        .menu-links a:hover { color: var(--sidebar-link-hover); background: var(--sidebar-hover-bg); }
+        .sidebar .closebtn { position: absolute; top: 10px; right: 25px; font-size: 36px; color: var(--sidebar-link); text-decoration: none; }
+        .theme-toggle-container { padding: 10px 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); margin-bottom: 15px; }
+        .theme-btn { background: transparent; border: 1px solid var(--sidebar-link); color: var(--sidebar-link-hover); padding: 6px 12px; font-size: 14px; cursor: pointer; border-radius: 4px; }
+        .theme-btn:hover { background: var(--sidebar-hover-bg); }
+
+        .sidebar-socials { padding: 30px 20px; border-top: 1px solid var(--border-color); text-align: center; }
+        .sidebar-socials p { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--sidebar-link); margin-bottom: 15px; }
+        .social-icons-grid { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .social-icons-grid a { color: var(--sidebar-link); font-size: 18px; text-decoration: none; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); border-radius: 4px; }
+        .social-icons-grid a:hover { color: #000000; background: #ffffff; border-color: #ffffff; transform: translateY(-3px); }
+
+        /* Main Structural Frame layout */
+        #main { position: relative; z-index: 1; max-width: 950px; margin: 0 auto; padding: 100px 20px 50px 20px; text-align: center; }
+        .openbtn { font-size: 16px; cursor: pointer; background-color: var(--text-main); color: var(--bg-main); padding: 10px 24px; border: none; font-weight: bold; position: fixed; top: 20px; left: 20px; z-index: 5; letter-spacing: 1px; border-radius: 50px; }
+        
+        h1 { font-size: 3rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; color: var(--text-main); }
+        .tagline { font-size: 1rem; color: var(--text-sub); margin-bottom: 50px; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* FIXED: Single-column horizontal rows for project cards */
+        .mods-grid { display: flex; flex-direction: column; gap: 30px; text-align: left; }
+        
+        /* FIXED: Card layout grouped horizontally */
+        .mod-card { 
+            background: var(--bg-panel); 
+            border: 1px solid var(--border-color); 
+            border-radius: 16px; 
+            padding: 30px; 
+            display: flex; 
+            flex-direction: row; 
+            align-items: center; 
+            gap: 30px; 
+            box-shadow: 0 4px 15px var(--card-shadow); 
+        }
+        .mod-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px var(--card-hover-shadow); border-color: var(--text-main); }
+        
+        /* FIXED: Restricts image wrapper strictly to 500x500 max resolution */
+        .logo-wrapper {
+            width: 100%;
+            max-width: 220px; /* Adapts beautifully inside horizontal row flex bounds */
+            height: 220px;
+            overflow: hidden;
+            border-radius: 12px; 
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-main);
+            flex-shrink: 0; /* Prevents text scaling forces from crushing image box */
+        }
+        .mod-logo-img {
+            width: 500px;
+            height: 500px;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover; 
+        }
+
+        /* Card Text Content block stack layout rules */
+        .mod-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            flex-grow: 1;
+        }
+        .mod-name { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; color: var(--text-main); }
+        .mod-desc { font-size: 1rem; color: var(--text-sub); line-height: 1.6; margin-bottom: 25px; }
+        
+        .mod-links { display: flex; gap: 15px; max-width: 350px; }
+        .card-btn { flex: 1; padding: 12px; text-align: center; text-decoration: none; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; cursor: pointer; border: none; }
+        .card-btn-dark { background: var(--text-main); color: var(--bg-main); }
+        .card-btn-outline { background: transparent; border: 1px solid var(--text-main); color: var(--text-main); }
+        .card-btn:hover { filter: brightness(0.85); transform: translateY(-2px); }
+
+        /* Back Home Button Layout */
+        .back-home-box { margin-top: 50px; display: flex; justify-content: center; }
+        .btn-back-home { background: transparent; border: 2px solid var(--text-main); color: var(--text-main); padding: 12px 35px; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; border-radius: 50px; text-decoration: none; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); }
+        .btn-back-home:hover { background: var(--text-main); color: var(--bg-main); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+
+        /* Responsive scaling breakpoints transformation logic layers */
+        @media screen and (max-width: 768px) { 
+            .mod-card { flex-direction: column; align-items: flex-start; padding: 25px; } 
+            .logo-wrapper { max-width: 100%; width: 100%; height: 250px; }
+            .mod-links { max-width: 100%; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="mySidebar" class="sidebar">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <div>
+      <div class="theme-toggle-container">
+          <span class="theme-label" style="color: var(--sidebar-link);">Appearance</span>
+          <button class="theme-btn" id="themeToggleBtn" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i> Dark</button>
+      </div>
+      <div class="menu-links">
+          <a href="index.html">Home</a>
+          <a href="projects.html" onclick="closeNav()">Projects</a>
+          <a href="about.html">About Us</a>
+      </div>
+  </div>
+  <div class="sidebar-socials">
+      <p>Connect With Us</p>
+      <div class="social-icons-grid">
+          <a href="instagram.com" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="discord.gg" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+          <a href="youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="planetminecraft.com" target="_blank" title="Planet Minecraft"><i class="fa-solid fa-earth-americas"></i></a>
+          <a href="modrinth.com" target="_blank" title="Modrinth"><i class="fa-solid fa-cubes"></i></a>
+          <a href="curseforge.com" target="_blank" title="CurseForge"><i class="fa-solid fa-fire"></i></a>
+      </div>
+  </div>
+</div>
+
+<button class="openbtn" onclick="openNav()">☰ MENU</button>
+
+<div id="main">
+  <h1>All Projects</h1>
+  <p class="tagline">Explore the Full ResourceCrafters Library</p>
+  
+  <div class="mods-grid">
+      <!-- Project 1 -->
+      <div class="mod-card">
+          <!-- FIXED: Placed picture block on left side of row node frame matrix -->
+          <div class="logo-wrapper">
+              <img src="./mod1-logo.png" alt="Mod One Icon" class="mod-logo-img">
+          </div>
+          <div class="mod-content">
+              <div>
+                  <div class="mod-name">Seri's 3D Totems</div>
+                  <p class="mod-desc">This Texture pack allows You to change The totem texture with your own skin in minecraft</p>
+              </div>
+              <div class="mod-links">
+                  <a href="https://direct-link.net/5712612/FMGu465X7Klz" class="card-btn card-btn-dark"><Link>Link</Link></a>
+              </div>
+          </div>
+      </div>
+
+      <!-- Project 2 -->
+      <div class="mod-card">
+          <!-- FIXED: Placed picture block on left side of row node frame matrix -->
+          <div class="logo-wrapper">
+              <img src="./mod2-logo.png" alt="Mod Two Icon" class="mod-logo-img">
+          </div>
+          <div class="mod-content">
+              <div>
+                  <div class="mod-name">Coming Soon</div>
+                  <p class="mod-desc">Introduces immersive graphical elements and item variations tailored specifically to vanilla style balancing parameters.</p>
+              </div>
+              <div class="mod-links">
+                  <a href="#" class="card-btn card-btn-dark">Link</a>
+
+              </div>
+          </div>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="mod-card">
+          <!-- FIXED: Placed picture block on left side of row node frame matrix -->
+          <div class="logo-wrapper">
+              <img src="./mod3-logo.png" alt="Mod Three Icon" class="mod-logo-img">
+          </div>
+          <div class="mod-content">
+              <div>
+                  <div class="mod-name">Coming Soon</div>
+                  <p class="mod-desc">Engineered mechanics providing robust backend framework stability changes for heavy multi-addon profiles.</p>
+              </div>
+              <div class="mod-links">
+                  <a href="#" class="card-btn card-btn-dark">Link</a>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="back-home-box">
+      <a href="index.html" class="btn-back-home"><i class="fa-solid fa-arrow-left" style="font-size: 12px; margin-right: 5px;"></i> Back to Home</a>
+  </div>
+</div>
+
+<script>
+function openNav() { document.getElementById("mySidebar").style.width = "260px"; }
+function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
+
+function syncButtonLabel(theme) {
+    const btn = document.getElementById("themeToggleBtn");
+    if (theme === "dark") {
+        btn.innerHTML = '<i class="fa-solid fa-sun"></i> Light';
+    } else {
+        btn.innerHTML = '<i class="fa-solid fa-moon"></i> Dark';
+    }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+    syncButtonLabel(currentTheme);
+});
+
+function toggleTheme() {
+    const htmlTag = document.documentElement;
+    let newTheme = "light";
+    if (htmlTag.getAttribute("data-theme") === "light") { newTheme = "dark"; }
+    htmlTag.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+    syncButtonLabel(newTheme);
+}
+</script>
+</body>
+</html>

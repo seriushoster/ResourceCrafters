@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResourceCrafters | Mod Hub</title>
+    <!-- FIXED: Full FontAwesome CDN path to display icons reliably -->
+    <link rel="stylesheet" href="cloudflare.com">
+    <style>
+        :root {
+            --bg-main: #f4f4f4; --bg-panel: #ffffff; --border-color: #e0e0e0;
+            --text-main: #000000; --text-sub: #555555; --sidebar-bg: #222222; 
+            --sidebar-link: #aaaaaa; --sidebar-link-hover: #ffffff; --sidebar-hover-bg: #2a2a2a;
+            --btn-shadow: rgba(0, 0, 0, 0.15); --card-shadow: rgba(0, 0, 0, 0.05); --card-hover-shadow: rgba(0, 0, 0, 0.12);
+        }
+        [data-theme="dark"] {
+            --bg-main: #0a0a0a; --bg-panel: #141414; --border-color: #222222;
+            --text-main: #ffffff; --text-sub: #b3b3b3; --sidebar-bg: #0d0d0d;
+            --sidebar-link: #888888; --sidebar-link-hover: #ffffff; --sidebar-hover-bg: #1a1a1a;
+            --btn-shadow: rgba(255, 255, 255, 0.1); --card-shadow: rgba(0, 0, 0, 0.4); --card-hover-shadow: rgba(0, 0, 0, 0.6);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.3s, box-shadow 0.3s; }
+        body, html { height: 100%; min-height: 100vh; overflow-y: auto; background-color: var(--bg-main); color: var(--text-main); }
+        .sidebar { height: 100%; width: 0; position: fixed; z-index: 10; top: 0; left: 0; background-color: var(--sidebar-bg); overflow-x: hidden; transition: width 0.5s; padding-top: 60px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; }
+        .menu-links a { padding: 15px 32px; text-decoration: none; font-size: 18px; color: var(--sidebar-link); display: block; text-transform: uppercase; letter-spacing: 2px; }
+        .menu-links a:hover { color: var(--sidebar-link-hover); background: var(--sidebar-hover-bg); }
+        .sidebar .closebtn { position: absolute; top: 10px; right: 25px; font-size: 36px; color: var(--sidebar-link); text-decoration: none; }
+        .theme-toggle-container { padding: 10px 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); margin-bottom: 15px; }
+        .theme-btn { background: transparent; border: 1px solid var(--sidebar-link); color: var(--sidebar-link-hover); padding: 6px 12px; font-size: 14px; cursor: pointer; border-radius: 4px; }
+        .sidebar-socials { padding: 30px 20px; border-top: 1px solid var(--border-color); text-align: center; }
+        .sidebar-socials p { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--sidebar-link); margin-bottom: 15px; }
+        .social-icons-grid { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .social-icons-grid a { color: var(--sidebar-link); font-size: 18px; text-decoration: none; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); border-radius: 4px; }
+        .social-icons-grid a:hover { color: #000000; background: #ffffff; border-color: #ffffff; transform: translateY(-3px); }
+        #main { position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; padding: 100px 20px 50px 20px; text-align: center; }
+        .openbtn { font-size: 16px; cursor: pointer; background-color: var(--text-main); color: var(--bg-main); padding: 10px 24px; border: none; font-weight: bold; position: fixed; top: 20px; left: 20px; z-index: 5; letter-spacing: 1px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h1 { font-size: 3.5rem; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 5px; color: var(--text-main); }
+        .tagline { font-size: 1.1rem; color: var(--text-sub); margin-bottom: 35px; text-transform: uppercase; letter-spacing: 2px; }
+        .btn-box { display: flex; flex-direction: row; justify-content: center; gap: 15px; margin-bottom: 60px; }
+        .btn-curvy { background: linear-gradient(135deg, var(--text-main) 0%, #555555 100%); color: var(--bg-main); padding: 16px 40px; text-decoration: none; font-weight: bold; text-transform: uppercase; border-radius: 50px; font-size: 15px; letter-spacing: 2px; cursor: pointer; border: none; box-shadow: 0 6px 20px var(--btn-shadow); display: inline-flex; align-items: center; gap: 10px; }
+        [data-theme="dark"] .btn-curvy { background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%); }
+        .btn-curvy:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 10px 25px var(--btn-shadow); }
+        .mods-section-title { font-size: 1.8rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 30px; color: var(--text-main); position: relative; display: inline-block; }
+        .mods-section-title::after { content: ''; position: absolute; bottom: -8px; left: 25%; width: 50%; height: 2px; background-color: var(--text-main); }
+        .mods-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-top: 10px; margin-bottom: 40px; }
+        .mod-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; text-align: left; box-shadow: 0 4px 15px var(--card-shadow); display: flex; flex-direction: column; justify-content: space-between; }
+        .mod-card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px var(--card-hover-shadow); border-color: var(--text-main); }
+        .mod-icon { font-size: 2.2rem; margin-bottom: 15px; color: var(--text-main); }
+        .mod-name { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; color: var(--text-main); }
+        .mod-desc { font-size: 0.95rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 20px; }
+        .mod-links { display: flex; gap: 10px; }
+        .card-btn { flex: 1; padding: 11px; text-align: center; text-decoration: none; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; cursor: pointer; border: none; }
+        .card-btn-dark { background: var(--text-main); color: var(--bg-main); }
+        .card-btn-outline { background: transparent; border: 1px solid var(--text-main); color: var(--text-main); }
+        .card-btn:hover { filter: brightness(0.85); transform: translateY(-2px); }
+        .see-more-container { margin-top: 20px; display: flex; justify-content: center; }
+        .btn-see-more { background: transparent; border: 2px solid var(--text-main); color: var(--text-main); padding: 12px 35px; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; border-radius: 50px; text-decoration: none; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); }
+        .btn-see-more:hover { background: var(--text-main); color: var(--bg-main); transform: translateY(-3px); box-shadow: 0 6px 15px var(--btn-shadow); }
+        @media screen and (max-width: 900px) { .mods-grid { grid-template-columns: 1fr; gap: 20px; } h1 { font-size: 2.5rem; } }
+    </style>
+</head>
+<body>
+
+<div id="mySidebar" class="sidebar">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <div>
+      <div class="theme-toggle-container">
+          <span class="theme-label" style="color: var(--sidebar-link);">Appearance</span>
+          <button class="theme-btn" id="themeToggleBtn" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i> Dark</button>
+      </div>
+      <div class="menu-links">
+          <a href="index.html">Home</a>
+          <a href="projects.html">Projects</a>
+          <a href="about.html">About Us</a>
+      </div>
+  </div>
+  <div class="sidebar-socials">
+      <p>Connect With Us</p>
+      <div class="social-icons-grid">
+          <a href="https://www.instagram.com/resourcecraftersofficial/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="https://discord.gg/MdSEwrDqz5" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+          <a href="https://www.youtube.com/@ResourceCraftersOfficial" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="https://www.planetminecraft.com/member/serius_/" target="_blank" title="Planet Minecraft"><i class="fa-solid fa-earth-americas"></i></a>
+          <a href="https://modrinth.com/user/Serius" target="_blank" title="Modrinth"><i class="fa-solid fa-cubes"></i></a>
+          <a href="https://www.curseforge.com/members/seriusgamer07/projects" target="_blank" title="CurseForge"><i class="fa-solid fa-fire"></i></a>
+      </div>
+  </div>
+</div>
+
+<button class="openbtn" onclick="openNav()">☰ MENU</button>
+
+<div id="main">
+  <h1>ResourceCrafters</h1>
+  <p class="tagline">Premium Java Modifications</p>
+  
+  <div class="btn-box">
+      <a href="projects.html" class="btn-curvy"><i class="fa-solid fa-compass-drafting"></i> Explore Projects</a>
+  </div>
+
+  <h2 class="mods-section-title">Latest 3 Mods</h2>
+  <div class="mods-grid">
+      <div class="mod-card">
+          <div>
+              <div class="mod-icon"><i class="fa-solid fa-cubes"></i></div>
+              <div class="mod-name">Seri's 3D Totems</div>
+              <p class="mod-desc">This Texture pack allows You to change The totem texture with your own skin in minecraft</p>
+          </div>
+          <div class="mod-links">
+              <a href="#" class="card-btn card-btn-dark">📥 Ad-Link</a>
+
+          </div>
+      </div>
+      <div class="mod-card">
+          <div>
+              <div class="mod-icon"><i class="fa-solid fa-hammer"></i></div>
+              <div class="mod-name">Coming Soon</div>
+              <p class="mod-desc">Introduces immersive graphical elements and item variations tailored specifically to vanilla style balancing parameters.</p>
+          </div>
+          <div class="mod-links">
+              <a href="#" class="card-btn card-btn-dark">📥 Ad-Link</a>
+          </div>
+      </div>
+      <div class="mod-card">
+          <div>
+              <div class="mod-icon"><i class="fa-solid fa-shield-halved"></i></div>
+              <div class="mod-name">Coming Soon</div>
+              <p class="mod-desc">Engineered mechanics providing robust backend framework stability changes for heavy multi-addon profiles.</p>
+          </div>
+          <div class="mod-links">
+              <a href="#" class="card-btn card-btn-dark">📥 Ad-Link</a>
+          </div>
+      </div>
+  </div>
+
+  <div class="see-more-container">
+      <a href="projects.html" class="btn-see-more">See More <i class="fa-solid fa-arrow-right" style="font-size: 12px; margin-left: 5px;"></i></a>
+  </div>
+</div>
+
+<script>
+function openNav() { document.getElementById("mySidebar").style.width = "260px"; }
+function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
+
+// FIXED: Persistent Theme Handler using LocalStorage
+const currentTheme = localStorage.getItem("theme") || "light";
+document.documentElement.setAttribute("data-theme", currentTheme);
+updateToggleButton(currentTheme);
+
+function toggleTheme() {
+    let theme = document.documentElement.getAttribute("data-theme");
+    let newTheme = (theme === "light") ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+    updateToggleButton(newTheme);
+}
+
+function updateToggleButton(theme) {
+    const btn = document.getElementById("themeToggleBtn");
+    if(btn) {
+        btn.innerHTML = (theme === "dark") ? '<i class="fa-solid fa-sun"></i> Light' : '<i class="fa-solid fa-moon"></i> Dark';
+    }
+}
+</script>
+</body>
+</html>
