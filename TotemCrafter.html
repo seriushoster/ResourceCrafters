@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3D Totem Creator for Minecraft</title>
+<script>let t;try{t=localStorage.getItem('theme')}catch(e){}
+document.documentElement.dataset.theme=t||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')</script>
+<style>
+:root{--bg:#f2f5f8;--card:#fff;--ink:#16202b;--mute:#5a6776;--bd:#d9e0e8;--acc:#2f9e4f;--ai:#fff;--lnk:#1a7f3c;--stage:linear-gradient(#e8eff6,#d3dde8);--bad:#c62828;color-scheme:light}
+[data-theme=dark]{--bg:#0f1318;--card:#171d25;--ink:#eaf0f6;--mute:#93a1b1;--bd:#28323f;--acc:#46c46a;--ai:#06200f;--lnk:#6fe08f;--stage:linear-gradient(#222c38,#151b23);--bad:#ff8a8a;color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,"Segoe UI",Roboto,sans-serif}
+.top,.wrap,footer{max-width:1020px;margin:0 auto;padding-left:16px;padding-right:16px}
+.top{padding-top:18px;padding-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{margin:0;font-size:1.6rem}.top p{margin:0;color:var(--mute)}
+.wrap{padding-bottom:30px;display:grid;grid-template-columns:1fr 380px;gap:16px;align-items:start}
+@media(max-width:860px){.wrap{grid-template-columns:1fr}.pv{order:-1}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin:0 0 14px}
+.pv .card{position:sticky;top:12px;margin:0}
+h2{font-size:1.1rem;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.n{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--acc);color:var(--ai);font-weight:700;font-size:.95rem;flex:none}
+button{font:inherit;font-weight:700;border:0;border-radius:12px;cursor:pointer}
+.pri{width:100%;padding:15px;font-size:1.05rem;background:var(--acc);color:var(--ai)}
+.pri:hover:not(:disabled){filter:brightness(1.08)}.pri:disabled{opacity:.4;cursor:not-allowed}
+.ghost{padding:8px 14px;background:transparent;color:var(--ink);border:1px solid var(--bd)}.ghost:hover{border-color:var(--acc)}
+.drop{display:block;border:2px dashed var(--bd);border-radius:14px;padding:34px 12px;text-align:center;cursor:pointer}
+.drop:hover,.drop.over{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,transparent)}
+#chip{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--bd);border-radius:12px;padding:8px 12px;word-break:break-all}
+#err{color:var(--bad);font-weight:600;margin:8px 0 0}
+small{color:var(--mute);display:block}a{color:var(--lnk)}
+.stage{position:relative;height:340px;border-radius:12px;background:var(--stage);perspective:900px;overflow:hidden;touch-action:pan-y;cursor:grab;display:grid;place-items:center;user-select:none}
+.empty{color:var(--mute);text-align:center;padding:20px}
+.model{position:absolute;left:50%;top:50%;transform-style:preserve-3d}
+.model div{position:absolute;left:0;top:0;backface-visibility:hidden;image-rendering:pixelated;background-repeat:no-repeat}
+.ctl{display:flex;gap:8px;margin:10px 0 4px}
+summary{cursor:pointer;font-weight:700}details ol,details ul{margin:10px 0 0;padding-left:22px}
+footer{padding-bottom:30px;text-align:center;color:var(--mute);font-size:.85rem}
+</style></head>
+<body>
+<header class="top"><div><h1>3D Totem Creator</h1><p>Turn your Minecraft skin into a 3D Totem of Undying</p></div>
+<button class="ghost" id="theme" aria-label="Switch light or dark mode"></button></header>
+<div class="wrap">
+<section>
+<div class="card"><b>Java Edition only.</b> This does not work on Bedrock, consoles, or phones.</div>
+<div class="card"><h2><span class="n" id="n1">1</span>Choose your skin</h2>
+<label class="drop" id="drop"><b>Click to choose</b> or drag your skin .png here<small>A 64x64 PNG file</small><input id="file" type="file" accept="image/png" hidden></label>
+<div id="chip" hidden><span id="fname"></span><button class="ghost" id="chg">Change</button></div>
+<p id="err" role="alert"></p>
+<small>Your picture never leaves your device. Everything happens in your browser.</small></div>
+<div class="card"><h2><span class="n">2</span>Download</h2><button class="pri" id="dl" disabled>Download my totem pack</button></div>
+<details class="card" open><summary>3. Put it in Minecraft</summary><ol>
+<li>Open Minecraft Java Edition, then go to <b>Options &gt; Resource Packs</b>.</li>
+<li>Click <b>Open Pack Folder</b>.</li>
+<li>Drag the downloaded zip into that folder. <b>Do not unzip it.</b></li>
+<li>Back in Minecraft, hover over the pack and click the arrow to move it to the right side. Click <b>Done</b>.</li>
+<li>Hold a Totem of Undying. It should look like you!</li></ol></details>
+<details class="card"><summary>Not working? Check these</summary><ul>
+<li>The pack is not in the list: the zip must sit directly in the pack folder, and you must be on Java Edition.</li>
+<li>It says the pack is for another version: it was made for Minecraft 1.21.4 and usually still works if you turn it on anyway.</li>
+<li>The file will not open here: make sure it is a .png that is 64x64 pixels.</li>
+<li>Skins with thin "slim" arms may look slightly off.</li></ul></details>
+</section>
+<aside class="pv"><div class="card"><h2>Preview</h2>
+<div class="stage" id="stage"><div class="empty" id="empty">Choose a skin to see your totem here</div><div class="model" id="model" hidden></div></div>
+<div class="ctl"><button class="ghost" id="spin">Pause spin</button><button class="ghost" id="reset">Reset view</button></div>
+<small>Drag the preview to rotate it. This is a preview, and in game the totem is shown smaller.</small></div></aside>
+</div>
+<footer>More packs: <a href="https://modrinth.com/user/Serius">Serius on Modrinth</a><br>Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.</footer>
+<script>
+const SKIN_MODEL="{\"texture_size\":[64,64],\"textures\":{\"0\":\"item/totem_of_undying\"},\"elements\":[{\"from\":[-4,24,-4],\"to\":[4,32,4],\"rotation\":{\"angle\":0,\"axis\":\"y\",\"origin\":[0,0,0]},\"faces\":{\"north\":{\"uv\":[2,2,4,4],\"texture\":\"#0\"},\"east\":{\"uv\":[0,2,2,4],\"texture\":\"#0\"},\"south\":{\"uv\":[6,2,8,4],\"texture\":\"#0\"},\"west\":{\"uv\":[4,2,6,4],\"texture\":\"#0\"},\"up\":{\"uv\":[4,2,2,0],\"texture\":\"#0\"},\"down\":{\"uv\":[6,0,4,2],\"texture\":\"#0\"}}},{\"from\":[-4.5,23,-4.5],\"to\":[4.5,32,4.5],\"rotation\":{\"angle\":0,\"axis\":\"y\",\"origin\":[0,0,0]},\"faces\":{\"north\":{\"uv\":[10,2,12,4],\"texture\":\"#0\"},\"east\":{\"uv\":[8,2,10,4],\"texture\":\"#0\"},\"south\":{\"uv\":[14,2,16,4],\"texture\":\"#0\"},\"west\":{\"uv\":[12,2,14,4],\"texture\":\"#0\"},\"up\":{\"uv\":[12,2,10,0],\"texture\":\"#0\"},\"down\":{\"uv\":[14,0,12,2],\"texture\":\"#0\"}}},{\"from\":[-4,12,-2],\"to\":[4,24,2],\"rotation\":{\"angle\":0,\"axis\":\"y\",\"origin\":[0,0,0]},\"faces\":{\"north\":{\"uv\":[5,5,7,8],\"texture\":\"#0\"},\"east\":{\"uv\":[4,5,5,8],\"texture\":\"#0\"},\"south\":{\"uv\":[8,5,10,8],\"texture\":\"#0\"},\"west\":{\"uv\":[7,5,8,8],\"texture\":\"#0\"},\"up\":{\"uv\":[7,5,5,4],\"texture\":\"#0\"},\"down\":{\"uv\":[9,4,7,5],\"texture\":\"#0\"}}},{\"from\":[-4.25,11.75,-2.25],\"to\":[4.25,24.25,2.25],\"rotation\":{\"angle\":0,\"axis\":\"y\",\"origin\":[0,0,0]},\"faces\":{\"north\":{\"uv\":[5,9,7,12],\"texture\":\"#0\"},\"east\":{\"uv\":[4,9,5,12],\"texture\":\"#0\"},\"south\":{\"uv\":[8,9,10,12],\"texture\":\"#0\"},\"west\":{\"uv\":[7,9,8,12],\"texture\":\"#0\"},\"up\":{\"uv\":[7,9,5,8],\"texture\":\"#0\"},\"down\":{\"uv\":[9,8,7,9],\"texture\":\"#0\"}}},{\"from\":[4,12,-2],\"to\":[8,24,2],\"rotation\":{\"angle\":0,\"axis\":\"y\",\"origin\":[0,0.5,0]},\"faces\":{\"north\":{\"uv\":[11,5,12,8],\"texture\":\"#0\"},\"east\":{\"uv\":[10,5,11,8],\"texture\":\"#0\"},\"south\":{\"uv\":[13,5,14,8],\"texture\":\"#0\"},\"west\":{\"uv\":[12,5,13,8],\"texture\":\"#0\"},\"up\":{\"uv\":[12,5,11,4],\"texture\":\"#0\"},\"down\":{\"uv\":[13,4,12,5],\"texture\":\"#0\"}}},{\"from\":[3.75,11.75,-2.25],\"to\":[8.25,24.25,2.25],\"rotation\":{\"angle\":0,\"axis\":\"y\",\"origin\":[5.5,18,0]},\"faces\":{\"north\":{\"uv\":[11,9,12,12],\"texture\":\"#0\"},\"east\":{\"uv\":[10,9,11,12],\"texture\":\"#0\"},\"south\":{\"uv\":[13,9,14,12],\"texture\":\"#0\"},\"west\":{\"uv\":[12,9,13,12],\"texture\":\"#0\"},\"up\":{\"uv\":[12,9,11,8],\"texture\":\"#0\"},\"down\":{\"uv\":[13,8,12,9],\"texture\":\"#0\"}}},{\"from\":[-8,12,-2],\"to\":[-4,24,2],\"rotation\":{\"angle\":0,\"axis\":\"y\",\"origin\":[0,0.5,0]},\"faces\":{\"north\":{\"uv\":[9,13,10,16],\"texture\":\"#0\"},\"east\":{\"uv\":[8,13,9,16],\"texture\":\"#0\"},\"south\":{\"uv\":[11,13,12,16],\"texture\":\"#0\"},\"west\":{\"uv\":[10,13,11,16],\"texture\":\"#0\"},\"up\":{\"uv\":[10,13,9,12],\"texture\":\"#0\"},\"down\":{\"uv\":[11,12,10,13],\"texture\":\"#0\"}}},{\"from\":[-8.25,11.75,-2.25],\"to\":[-3.75,24.25,2.25],\"rotation\":{\"angle\":0,\"axis\":\"y\",\"origin\":[0,0.5,0]},\"faces\":{\"north\":{\"uv\":[13,13,14,16],\"texture\":\"#0\"},\"east\":{\"uv\":[12,13,13,16],\"texture\":\"#0\"},\"south\":{\"uv\":[15,13,16,16],\"texture\":\"#0\"},\"west\":{\"uv\":[14,13,15,16],\"texture\":\"#0\"},\"up\":{\"uv\":[14,13,13,12],\"texture\":\"#0\"},\"down\":{\"uv\":[15,12,14,13],\"texture\":\"#0\"}}},{\"from\":[-0.1,0,-2],\"to\":[3.9,12,2],\"rotation\":{\"angle\":0,\"axis\":\"y\",\"origin\":[0,0,0]},\"faces\":{\"north\":{\"uv\":[1,5,2,8],\"texture\":\"#0\"},\"east\":{\"uv\":[0,5,1,8],\"texture\":\"#0\"},\"south\":{\"uv\":[3,5,4,8],\"texture\":\"#0\"},\"west\":{\"uv\":[2,5,3,8],\"texture\":\"#0\"},\"up\":{\"uv\":[2,5,1,4],\"texture\":\"#0\"},\"down\":{\"uv\":[3,4,2,5],\"texture\":\"#0\"}}},{\"from\":[-0.35,-0.25,-2.25],\"to\":[4.15,12.25,2.25],\"rotation\":{\"angle\":0,\"axis\":\"y\",\"origin\":[0,0,0]},\"faces\":{\"north\":{\"uv\":[1,9,2,12],\"texture\":\"#0\"},\"east\":{\"uv\":[0,9,1,12],\"texture\":\"#0\"},\"south\":{\"uv\":[3,9,4,12],\"texture\":\"#0\"},\"west\":{\"uv\":[2,9,3,12],\"texture\":\"#0\"},\"up\":{\"uv\":[2,9,1,8],\"texture\":\"#0\"},\"down\":{\"uv\":[3,8,2,9],\"texture\":\"#0\"}}},{\"from\":[-3.9,0,-2],\"to\":[0.1,12,2],\"rotation\":{\"angle\":0,\"axis\":\"y\",\"origin\":[0,0,0]},\"faces\":{\"north\":{\"uv\":[5,13,6,16],\"texture\":\"#0\"},\"east\":{\"uv\":[4,13,5,16],\"texture\":\"#0\"},\"south\":{\"uv\":[7,13,8,16],\"texture\":\"#0\"},\"west\":{\"uv\":[6,13,7,16],\"texture\":\"#0\"},\"up\":{\"uv\":[6,13,5,12],\"texture\":\"#0\"},\"down\":{\"uv\":[7,12,6,13],\"texture\":\"#0\"}}},{\"from\":[-4.15,-0.25,-2.25],\"to\":[0.35,12.25,2.25],\"rotation\":{\"angle\":0,\"axis\":\"y\",\"origin\":[0,0,0]},\"faces\":{\"north\":{\"uv\":[1,13,2,16],\"texture\":\"#0\"},\"east\":{\"uv\":[0,13,1,16],\"texture\":\"#0\"},\"south\":{\"uv\":[3,13,4,16],\"texture\":\"#0\"},\"west\":{\"uv\":[2,13,3,16],\"texture\":\"#0\"},\"up\":{\"uv\":[2,13,1,12],\"texture\":\"#0\"},\"down\":{\"uv\":[3,12,2,13],\"texture\":\"#0\"}}}],\"display\":{\"thirdperson_righthand\":{\"rotation\":[0,90,0],\"translation\":[1.75,-0.25,0.25],\"scale\":[0.2,0.2,0.2]},\"thirdperson_lefthand\":{\"rotation\":[0,90,0],\"translation\":[1.75,-0.25,3.5],\"scale\":[0.2,0.2,0.2]},\"firstperson_righthand\":{\"rotation\":[0,103,0],\"translation\":[-0.5,3,2],\"scale\":[0.2,0.2,0.2]},\"firstperson_lefthand\":{\"rotation\":[0,103,0],\"translation\":[0,3,5],\"scale\":[0.2,0.2,0.2]},\"ground\":{\"translation\":[1.5,0,1.5],\"scale\":[0.19,0.2,0.2]},\"gui\":{\"rotation\":[0,-180,0],\"translation\":[-4.25,-4.25,0],\"scale\":[0.5,0.5,0.49]},\"head\":{\"translation\":[1.5,8,-3],\"scale\":[0.2,0.2,0.2]},\"fixed\":{\"rotation\":[-5,0,0],\"translation\":[3,-3,2],\"scale\":[0.4,0.4,0.4]}},\"groups\":[{\"name\":\"skin\",\"origin\":[8,8,8],\"children\":[{\"name\":\"skin\",\"origin\":[8,8,8],\"children\":[{\"name\":\"skin\",\"origin\":[8,8,8],\"children\":[{\"name\":\"Head\",\"origin\":[0,24,0],\"children\":[0,1]},{\"name\":\"Body\",\"origin\":[0,24,0],\"children\":[2,3]},{\"name\":\"RightArm\",\"origin\":[5,21.5,0],\"children\":[4,5]},{\"name\":\"LeftArm\",\"origin\":[-5,21.5,0],\"children\":[6,7]},{\"name\":\"RightLeg\",\"origin\":[1.9,12,0],\"children\":[8,9]},{\"name\":\"LeftLeg\",\"origin\":[-1.9,12,0],\"children\":[10,11]}]}]}]}]}",TOTEM_MODEL="{\n  \"parent\": \"minecraft:item/skin\",\n  \"textures\": {\n    \"layer0\": \"minecraft:item/totem_of_undying\"\n  }\n}",MCMETA="{\n  \"pack\": {\n    \"pack_format\": 48,\n    \"description\": \"§6§l§nSeri's Custom §l§e§mTotems!\"\n  }\n}";
+
+const $=i=>document.getElementById(i),enc=new TextEncoder(),S=7;
+let skinBytes=null,url=null,rx=-12,ry=30,spin=!matchMedia('(prefers-reduced-motion:reduce)').matches,drag=false;
+function setTheme(t){document.documentElement.dataset.theme=t;try{localStorage.setItem('theme',t)}catch(e){}$('theme').textContent=t==='dark'?'Light mode':'Dark mode'}
+setTheme(document.documentElement.dataset.theme);
+$('theme').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+
+const T=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const crc32=b=>{let c=-1;for(let i=0;i<b.length;i++)c=T[(c^b[i])&255]^(c>>>8);return(~c)>>>0};
+function makeZip(files){const parts=[],cen=[];let off=0;
+for(const f of files){const n=enc.encode(f.name),c=crc32(f.data),s=f.data.length;
+const h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(12,33,true);h.setUint32(14,c,true);h.setUint32(18,s,true);h.setUint32(22,s,true);h.setUint16(26,n.length,true);
+parts.push(new Uint8Array(h.buffer),n,f.data);
+const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint16(8,0x0800,true);d.setUint16(14,33,true);d.setUint32(16,c,true);d.setUint32(20,s,true);d.setUint32(24,s,true);d.setUint16(28,n.length,true);d.setUint32(42,off,true);
+cen.push(new Uint8Array(d.buffer),n);off+=30+n.length+s}
+const cs=cen.reduce((a,b)=>a+b.length,0),e=new DataView(new ArrayBuffer(22));
+e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+return new Blob([...parts,...cen,new Uint8Array(e.buffer)],{type:'application/zip'})}
+
+const toPng=c=>new Promise(r=>c.toBlob(b=>b.arrayBuffer().then(a=>r(new Uint8Array(a))),'image/png'));
+const loadImg=u=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=u});
+function legacy(c,x){const s=document.createElement('canvas');s.width=s.height=64;s.getContext('2d').drawImage(c,0,0);
+const fl=(sx,sy,w,h,dx,dy)=>{x.save();x.translate(dx+w,dy);x.scale(-1,1);x.drawImage(s,sx,sy,w,h,0,0,w,h);x.restore()};
+for(const[ox,oy,px,py]of[[0,16,16,48],[40,16,32,48]]){
+fl(ox+4,oy,4,4,px+4,py);fl(ox+8,oy,4,4,px+8,py);
+fl(ox+8,oy+4,4,12,px,py+4);fl(ox,oy+4,4,12,px+8,py+4);
+fl(ox+4,oy+4,4,12,px+4,py+4);fl(ox+12,oy+4,4,12,px+12,py+4)}}
+
+const err=m=>{$('err').textContent=m};
+const view=()=>$('model').style.transform='rotateX('+rx+'deg) rotateY('+ry+'deg)';
+function build(){const m=JSON.parse(SKIN_MODEL),root=$('model');root.innerHTML='';
+for(const e of m.elements){const[x1,y1,z1]=e.from,[x2,y2,z2]=e.to,sx=x2-x1,sy=y2-y1,sz=z2-z1;
+const P=[-(x1+x2)/2*S,-((y1+y2)/2-16)*S,-(z1+z2)/2*S],hx=sx/2*S,hy=sy/2*S,hz=sz/2*S;
+for(const[d,f]of Object.entries(e.faces)){let w,h,t;const tr=(a,b,c)=>'translate3d('+a+'px,'+b+'px,'+c+'px)';
+if(d=='north'){w=sx;h=sy;t=tr(P[0],P[1],P[2]+hz)}
+else if(d=='south'){w=sx;h=sy;t=tr(P[0],P[1],P[2]-hz)+' rotateY(180deg)'}
+else if(d=='east'){w=sz;h=sy;t=tr(P[0]-hx,P[1],P[2])+' rotateY(-90deg)'}
+else if(d=='west'){w=sz;h=sy;t=tr(P[0]+hx,P[1],P[2])+' rotateY(90deg)'}
+else if(d=='up'){w=sx;h=sz;t=tr(P[0],P[1]-hy,P[2])+' rotateX(90deg) rotateZ(180deg)'}
+else{w=sx;h=sz;t=tr(P[0],P[1]+hy,P[2])+' rotateX(-90deg)'}
+const[u1,v1,u2,v2]=f.uv,rw=Math.abs(u2-u1)*4,rh=Math.abs(v2-v1)*4,W=w*S,H=h*S;
+if(u1>u2)t+=' scaleX(-1)';if(v1>v2)t+=' scaleY(-1)';
+const el=document.createElement('div'),s=el.style;s.width=W+'px';s.height=H+'px';s.margin=(-H/2)+'px 0 0 '+(-W/2)+'px';s.transform=t;
+s.backgroundImage='url('+url+')';s.backgroundSize=(64*W/rw)+'px '+(64*H/rh)+'px';
+s.backgroundPosition=(-Math.min(u1,u2)*4*W/rw)+'px '+(-Math.min(v1,v2)*4*H/rh)+'px';root.appendChild(el)}}}
+async function load(file){
+err('');if(!file)return;
+const buf=new Uint8Array(await file.arrayBuffer());
+if(!(buf[0]===0x89&&buf[1]===0x50&&buf[2]===0x4E&&buf[3]===0x47))return err("That is not a PNG file. A skin file ends in .png");
+const tail=new TextDecoder('latin1').decode(buf.slice(-64));
+if(buf.length<24||!tail.includes("IEND"))return err("That file looks damaged or incomplete. Try downloading your skin again.");
+const dv=new DataView(buf.buffer,buf.byteOffset,buf.byteLength),w=dv.getUint32(16),h=dv.getUint32(20);
+if(!(w===64&&(h===64||h===32)))return err("That image is "+w+"x"+h+" pixels. A normal skin is 64x64.");
+const blob=new Blob([buf],{type:'image/png'});let img;
+try{img=await loadImg(URL.createObjectURL(blob))}catch(e){try{img=await createImageBitmap(blob)}catch(e2){return err("Your browser could not read that file. It may be damaged, so try downloading your skin again, or try a different browser.")}}
+let bytes=buf;
+if(h===32){const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');x.drawImage(img,0,0);legacy(c,x);bytes=await toPng(c)}
+skinBytes=bytes;if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(new Blob([bytes],{type:'image/png'}));
+build();view();$('empty').hidden=true;$('model').hidden=false;
+$('drop').hidden=true;$('chip').hidden=false;$('fname').textContent=file.name;$('n1').textContent='\u2713';$('dl').disabled=false}
+$('file').onchange=e=>load(e.target.files[0]);$('chg').onclick=()=>$('file').click();
+const dz=$('drop');dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');
+dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');load(e.dataTransfer.files[0])};
+const st=$('stage');let lx,ly;
+st.onpointerdown=e=>{drag=true;lx=e.clientX;ly=e.clientY;st.setPointerCapture(e.pointerId)};
+st.onpointermove=e=>{if(!drag)return;ry+=(e.clientX-lx)*.6;rx=Math.max(-80,Math.min(80,rx-(e.clientY-ly)*.6));lx=e.clientX;ly=e.clientY;view()};
+st.onpointerup=st.onpointercancel=()=>drag=false;
+const sp=()=>$('spin').textContent=spin?'Pause spin':'Spin';sp();
+$('spin').onclick=()=>{spin=!spin;sp()};$('reset').onclick=()=>{rx=-12;ry=30;view()};
+(function tick(){if(spin&&!drag&&url){ry+=.5;view()}requestAnimationFrame(tick)})();
+$('dl').onclick=async()=>{
+const im=await loadImg(url),ic=document.createElement('canvas');ic.width=ic.height=128;const c=ic.getContext('2d');c.imageSmoothingEnabled=false;
+c.drawImage(im,8,8,8,8,0,0,128,128);c.drawImage(im,40,8,8,8,0,0,128,128);
+const t=s=>enc.encode(s);
+const blob=makeZip([{name:'pack.mcmeta',data:t(MCMETA)},{name:'pack.png',data:await toPng(ic)},
+{name:'assets/minecraft/models/item/skin.json',data:t(SKIN_MODEL)},
+{name:'assets/minecraft/models/item/totem_of_undying.json',data:t(TOTEM_MODEL)},
+{name:'assets/minecraft/textures/item/totem_of_undying.png',data:skinBytes}]);
+const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='My-3D-Totem.zip';document.body.appendChild(a);a.click();a.remove()};
+</script></body></html>
